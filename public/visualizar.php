@@ -1,6 +1,8 @@
 <?php
 require_once __DIR__ . '/../src/Noticia.php';
 
+use App\Noticia;
+
 $id = (int) ($_GET['id'] ?? 0);
 $noticia = new Noticia();
 $item = $noticia->buscarPorId($id);

@@ -1,6 +1,8 @@
 <?php
 require_once __DIR__ . '/../src/Noticia.php';
 
+use App\Noticia;
+
 $erro = '';
 $sucesso = false;
 
