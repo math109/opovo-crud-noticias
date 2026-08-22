@@ -70,5 +70,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </form>
 
     <p><a href="index.php">Voltar para a listagem</a></p>
+    <script src="js/script.js"></script>
 </body>
 </html>

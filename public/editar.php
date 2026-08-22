@@ -80,5 +80,6 @@ $dataFormatada = date('Y-m-d\TH:i', strtotime($item['data_publicacao']));
     </form>
 
     <p><a href="visualizar.php?id=<?= $id ?>">Cancelar</a></p>
+    <script src="js/script.js"></script>
 </body>
 </html>
