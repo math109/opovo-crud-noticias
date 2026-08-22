@@ -60,6 +60,36 @@ class Noticia
         $resultado = $stmt->fetch();
 
         return $resultado ?: null;
+
+
+        
+    }
+
+        /**
+     * Atualiza uma notícia existente pelo ID.
+     */
+    public function atualizar(int $id, array $dados): bool
+    {
+        $sql = "UPDATE noticias SET
+                    titulo = :titulo,
+                    subtitulo = :subtitulo,
+                    conteudo = :conteudo,
+                    autor = :autor,
+                    categoria = :categoria,
+                    data_publicacao = :data_publicacao
+                WHERE id = :id";
+
+        $stmt = $this->pdo->prepare($sql);
+
+        return $stmt->execute([
+            ':titulo' => $dados['titulo'],
+            ':subtitulo' => $dados['subtitulo'],
+            ':conteudo' => $dados['conteudo'],
+            ':autor' => $dados['autor'],
+            ':categoria' => $dados['categoria'],
+            ':data_publicacao' => $dados['data_publicacao'],
+            ':id' => $id,
+        ]);
     }
 
 
