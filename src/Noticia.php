@@ -35,4 +35,32 @@ class Noticia
             ':data_publicacao' => $dados['data_publicacao'],
         ]);
     }
+
+        /**
+     * Retorna todas as notícias, das mais recentes para as mais antigas.
+     */
+    public function listarTodas(): array
+    {
+        $sql = "SELECT * FROM noticias ORDER BY data_publicacao DESC";
+        $stmt = $this->pdo->query($sql);
+
+        return $stmt->fetchAll();
+    }
+
+    /**
+     * Busca uma única notícia pelo ID.
+     * Retorna null se não encontrar (evita erro ao acessar array vazio).
+     */
+    public function buscarPorId(int $id): ?array
+    {
+        $sql = "SELECT * FROM noticias WHERE id = :id";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([':id' => $id]);
+
+        $resultado = $stmt->fetch();
+
+        return $resultado ?: null;
+    }
+
+
 }
