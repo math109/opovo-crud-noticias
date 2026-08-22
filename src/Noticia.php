@@ -92,5 +92,16 @@ class Noticia
         ]);
     }
 
+        /**
+     * Remove uma notícia do banco pelo ID.
+     */
+    public function excluir(int $id): bool
+    {
+        $sql = "DELETE FROM noticias WHERE id = :id";
+        $stmt = $this->pdo->prepare($sql);
+
+        return $stmt->execute([':id' => $id]);
+    }
+
 
 }
