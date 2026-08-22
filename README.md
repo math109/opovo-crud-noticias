@@ -1,3 +1,4 @@
+
 # 📰 Sistema de Notícias — CRUD em PHP
 
 Projeto desenvolvido como teste prático para o processo seletivo de **Aprendiz Back-end** do Grupo de Comunicação O POVO. Consiste em um CRUD (Create, Read, Update, Delete) de notícias, construído em PHP puro com MySQL, seguindo boas práticas de organização, segurança e versionamento.
