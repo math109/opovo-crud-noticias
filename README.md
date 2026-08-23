@@ -8,16 +8,19 @@ Projeto desenvolvido como teste prático para o processo seletivo de **Aprendiz 
 ## Screenshots
 
 ### Listagem de notícias
-![Listagem de notícias](docs/screenshots/listagem.png)
+![Listagem de notícias](docs/screenshots/listagem.jpeg)
+
+### Busca e filtro por categoria
+![Busca e filtro](docs/screenshots/busca.jpeg)
 
 ### Cadastro de notícia
-![Formulário de cadastro](docs/screenshots/cadastro.png)
+![Formulário de cadastro](docs/screenshots/cadastro.jpeg)
 
 ### Visualização de notícia
-![Visualização de notícia](docs/screenshots/visualizacao.png)
+![Visualização de notícia](docs/screenshots/visualizacao.jpeg)
 
 ### Edição de notícia
-![Formulário de edição](docs/screenshots/edicao.png)
+![Formulário de edição](docs/screenshots/edicao.jpeg)
 
 ---
 
