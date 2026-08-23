@@ -157,3 +157,26 @@ button:hover {
 .form-busca button {
     padding: 8px 14px;
 }
+
+/* ===== Paginação ===== */
+.paginacao {
+    display: flex;
+    gap: 8px;
+    margin-top: 20px;
+}
+
+.paginacao a {
+    padding: 6px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background: #fff;
+}
+
+.paginacao a.pagina-ativa {
+    background-color: #b30000;
+    color: #fff;
+    border-color: #b30000;
+}
+
+
+

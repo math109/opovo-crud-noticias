@@ -57,27 +57,48 @@ class Noticia
      * Busca notícias por termo (no título) e/ou categoria.
      * Se ambos os parâmetros vierem vazios, retorna todas as notícias.
      */
-    public function buscar(string $termo = '', string $categoria = ''): array
+        /**
+     * Busca notícias por termo e/ou categoria, com paginação.
+     * Retorna um array com 'noticias' (os itens da página atual)
+     * e 'total' (quantidade total de registros, sem considerar o limite).
+     */
+    public function buscar(string $termo = '', string $categoria = '', int $pagina = 1, int $porPagina = 5): array
     {
-        $sql = "SELECT * FROM noticias WHERE 1=1";
+        $condicoes = "WHERE 1=1";
         $parametros = [];
 
         if ($termo !== '') {
-            $sql .= " AND titulo LIKE :termo";
+            $condicoes .= " AND titulo LIKE :termo";
             $parametros[':termo'] = '%' . $termo . '%';
         }
 
         if ($categoria !== '') {
-            $sql .= " AND categoria = :categoria";
+            $condicoes .= " AND categoria = :categoria";
             $parametros[':categoria'] = $categoria;
         }
 
-        $sql .= " ORDER BY data_publicacao DESC";
+        // Conta o total de registros que batem com o filtro (sem LIMIT)
+        $sqlTotal = "SELECT COUNT(*) FROM noticias {$condicoes}";
+        $stmtTotal = $this->pdo->prepare($sqlTotal);
+        $stmtTotal->execute($parametros);
+        $total = (int) $stmtTotal->fetchColumn();
 
+        // Busca só os registros da página atual
+        $offset = ($pagina - 1) * $porPagina;
+        $sql = "SELECT * FROM noticias {$condicoes} ORDER BY data_publicacao DESC LIMIT :limite OFFSET :offset";
         $stmt = $this->pdo->prepare($sql);
-        $stmt->execute($parametros);
 
-        return $stmt->fetchAll();
+        foreach ($parametros as $chave => $valor) {
+            $stmt->bindValue($chave, $valor);
+        }
+        $stmt->bindValue(':limite', $porPagina, PDO::PARAM_INT);
+        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return [
+            'noticias' => $stmt->fetchAll(),
+            'total' => $total,
+        ];
     }
 
     /**

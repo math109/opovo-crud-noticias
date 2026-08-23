@@ -7,8 +7,12 @@ $noticia = new Noticia();
 
 $termoBusca = trim($_GET['busca'] ?? '');
 $categoriaFiltro = trim($_GET['categoria'] ?? '');
+$paginaAtual = max(1, (int) ($_GET['pagina'] ?? 1));
+$porPagina = 5;
 
-$noticias = $noticia->buscar($termoBusca, $categoriaFiltro);
+$resultado = $noticia->buscar($termoBusca, $categoriaFiltro, $paginaAtual, $porPagina);
+$noticias = $resultado['noticias'];
+$totalPaginas = (int) ceil($resultado['total'] / $porPagina);
 $categorias = $noticia->listarCategorias();
 
 ?>
@@ -66,6 +70,16 @@ $categorias = $noticia->listarCategorias();
                 </article>
             <?php endforeach; ?>
         </div>
+    <?php endif; ?>
+        <?php if ($totalPaginas > 1): ?>
+        <nav class="paginacao">
+            <?php for ($i = 1; $i <= $totalPaginas; $i++): ?>
+                <a href="index.php?pagina=<?= $i ?>&busca=<?= urlencode($termoBusca) ?>&categoria=<?= urlencode($categoriaFiltro) ?>"
+                   class="<?= $i === $paginaAtual ? 'pagina-ativa' : '' ?>">
+                    <?= $i ?>
+                </a>
+            <?php endfor; ?>
+        </nav>
     <?php endif; ?>
 </body>
 </html>
