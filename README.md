@@ -104,6 +104,16 @@ Veja o arquivo [`TESTES.md`](./TESTES.md) com o roteiro de testes manuais realiz
 
 ---
 
+## Possíveis melhorias futuras
+
+Este projeto foi desenvolvido dentro do escopo do teste prático, mas algumas evoluções poderiam agregar valor em uma versão futura:
+
+- **Autenticação de administrador** — restringir cadastro/edição/exclusão a usuários logados, mantendo a listagem pública
+- **API REST** — expor os dados de notícias em formato JSON, permitindo integração com outras aplicações (ex: um app mobile)
+- **Upload de imagem de capa** — permitir anexar uma imagem a cada notícia
+- **Editor de texto rico (WYSIWYG)** — substituir o `<textarea>` simples por um editor com formatação (negrito, links, etc)
+- **Testes automatizados end-to-end** — além dos testes unitários já existentes, adicionar testes que simulam a navegação completa pelo navegador (ex: com Selenium ou Cypress)
+
 ## Autor
 
 **Matheus Martins da Costa Lima**
