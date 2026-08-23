@@ -1,4 +1,4 @@
-# 🧪 Roteiro de Testes
+# Roteiro de Testes
 
 Este documento descreve os testes manuais realizados para validar o funcionamento do CRUD de notícias. Os testes cobrem os quatro fluxos principais (Create, Read, Update, Delete), busca/filtro, paginação e casos de validação e segurança.
 
