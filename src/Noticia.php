@@ -53,6 +53,45 @@ class Noticia
         return $stmt->fetchAll();
     }
 
+        /**
+     * Busca notícias por termo (no título) e/ou categoria.
+     * Se ambos os parâmetros vierem vazios, retorna todas as notícias.
+     */
+    public function buscar(string $termo = '', string $categoria = ''): array
+    {
+        $sql = "SELECT * FROM noticias WHERE 1=1";
+        $parametros = [];
+
+        if ($termo !== '') {
+            $sql .= " AND titulo LIKE :termo";
+            $parametros[':termo'] = '%' . $termo . '%';
+        }
+
+        if ($categoria !== '') {
+            $sql .= " AND categoria = :categoria";
+            $parametros[':categoria'] = $categoria;
+        }
+
+        $sql .= " ORDER BY data_publicacao DESC";
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute($parametros);
+
+        return $stmt->fetchAll();
+    }
+
+    /**
+     * Retorna a lista de categorias distintas já cadastradas,
+     * para popular um filtro (select) na tela.
+     */
+    public function listarCategorias(): array
+    {
+        $sql = "SELECT DISTINCT categoria FROM noticias WHERE categoria != '' ORDER BY categoria";
+        $stmt = $this->pdo->query($sql);
+
+        return $stmt->fetchAll(PDO::FETCH_COLUMN);
+    }
+
     /**
      * Busca uma única notícia pelo ID.
      * Retorna null se não encontrar (evita erro ao acessar array vazio).

@@ -4,7 +4,13 @@ require_once __DIR__ . '/../src/Noticia.php';
 use App\Noticia;
 
 $noticia = new Noticia();
-$noticias = $noticia->listarTodas();
+
+$termoBusca = trim($_GET['busca'] ?? '');
+$categoriaFiltro = trim($_GET['categoria'] ?? '');
+
+$noticias = $noticia->buscar($termoBusca, $categoriaFiltro);
+$categorias = $noticia->listarCategorias();
+
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -17,6 +23,24 @@ $noticias = $noticia->listarTodas();
     <h1>Notícias</h1>
 
     <p><a href="criar.php">+ Nova notícia</a></p>
+
+        <form method="GET" action="index.php" class="form-busca">
+        <input type="text" name="busca" placeholder="Buscar por título..." value="<?= htmlspecialchars($termoBusca) ?>">
+
+        <select name="categoria">
+            <option value="">Todas as categorias</option>
+            <?php foreach ($categorias as $cat): ?>
+                <option value="<?= htmlspecialchars($cat) ?>" <?= $cat === $categoriaFiltro ? 'selected' : '' ?>>
+                    <?= htmlspecialchars($cat) ?>
+                </option>
+            <?php endforeach; ?>
+        </select>
+
+        <button type="submit">Filtrar</button>
+        <?php if ($termoBusca || $categoriaFiltro): ?>
+            <a href="index.php">Limpar filtro</a>
+        <?php endif; ?>
+    </form>
 
     <?php if (empty($noticias)): ?>
         <p>Nenhuma notícia cadastrada ainda.</p>
