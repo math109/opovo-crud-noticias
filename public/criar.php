@@ -6,9 +6,12 @@ use App\Noticia;
 $erro = '';
 $sucesso = false;
 
-// Se o formulário foi enviado (método POST), processa o cadastro
+// Verifica se o formulário foi enviado (POST) ou se é apenas a primeira
+// visita à página (GET, quando o navegador só carrega o formulário vazio).
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Validação simples: título, conteúdo e autor são obrigatórios
+    // trim() remove espaços em branco extras no início/fim.
+    // O operador ?? '' evita erro caso o campo não tenha sido enviado,
+    // usando string vazia como valor padrão.
     $titulo = trim($_POST['titulo'] ?? '');
     $subtitulo = trim($_POST['subtitulo'] ?? '');
     $conteudo = trim($_POST['conteudo'] ?? '');
