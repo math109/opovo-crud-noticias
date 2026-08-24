@@ -8,9 +8,12 @@ use PDOException;
 require_once __DIR__ . '/../config/database.php';
 
 /**
- * Classe responsável por toda a lógica de acesso a dados
- * da entidade Notícia. Centralizar aqui evita espalhar
- * consultas SQL pelas páginas do site.
+ * Classe responsável por toda a lógica de acesso a dados da entidade Notícia.
+ *
+ * Centralizar aqui todas as operações no banco (em vez de escrever SQL
+ * espalhado pelas páginas em public/) segue o princípio de Separação de
+ * Responsabilidades: esta classe cuida só de "falar com o banco", enquanto
+ * as páginas em public/ cuidam só de "mostrar a interface".
  */
 class Noticia
 {
@@ -22,8 +25,15 @@ class Noticia
     }
 
     /**
-     * Insere uma nova notícia no banco.
-     * Usa prepared statement (:parametros) para evitar SQL Injection.
+     * Insere uma nova notícia no banco de dados.
+     *
+     * Usa um prepared statement (com parâmetros nomeados, como :titulo)
+     * em vez de concatenar os valores direto na query SQL — isso é o que
+     * previne ataques de SQL Injection: o banco trata os valores sempre
+     * como dado, nunca como parte do comando SQL.
+     *
+     * @param array $dados Dados da notícia (titulo, subtitulo, conteudo, autor, categoria, data_publicacao)
+     * @return bool true se a inserção foi bem-sucedida
      */
     public function criar(array $dados): bool
     {
@@ -42,7 +52,7 @@ class Noticia
         ]);
     }
 
-        /**
+    /**
      * Retorna todas as notícias, das mais recentes para as mais antigas.
      */
     public function listarTodas(): array
@@ -53,23 +63,19 @@ class Noticia
         return $stmt->fetchAll();
     }
 
-        /**
-     * Busca notícias por termo (no título) e/ou categoria.
-     * Se ambos os parâmetros vierem vazios, retorna todas as notícias.
-     */
-        /**
+    /**
      * Busca notícias por termo e/ou categoria, com paginação.
      * Retorna um array com 'noticias' (os itens da página atual)
      * e 'total' (quantidade total de registros, sem considerar o limite).
      */
     public function buscar(string $termo = '', string $categoria = '', int $pagina = 1, int $porPagina = 5): array
     {
-        $condicoes = "WHERE 1=1";
+        $condicoes = "WHERE 1=1"; // "1=1" permite sempre usar "AND" depois, sem checar se é a primeira condição
         $parametros = [];
 
         if ($termo !== '') {
             $condicoes .= " AND titulo LIKE :termo";
-            $parametros[':termo'] = '%' . $termo . '%';
+            $parametros[':termo'] = '%' . $termo . '%'; // % antes e depois = busca por trecho, em qualquer parte do título
         }
 
         if ($categoria !== '') {
@@ -77,13 +83,15 @@ class Noticia
             $parametros[':categoria'] = $categoria;
         }
 
-        // Conta o total de registros que batem com o filtro (sem LIMIT)
+        // Primeiro, contamos quantos registros existem no TOTAL (sem paginação),
+        // para calcular depois quantas páginas serão necessárias.
         $sqlTotal = "SELECT COUNT(*) FROM noticias {$condicoes}";
         $stmtTotal = $this->pdo->prepare($sqlTotal);
         $stmtTotal->execute($parametros);
         $total = (int) $stmtTotal->fetchColumn();
 
-        // Busca só os registros da página atual
+        // Calcula quantos registros pular (OFFSET) com base na página solicitada.
+        // Ex: página 2 com 5 por página = pula os 5 primeiros (OFFSET 5).
         $offset = ($pagina - 1) * $porPagina;
         $sql = "SELECT * FROM noticias {$condicoes} ORDER BY data_publicacao DESC LIMIT :limite OFFSET :offset";
         $stmt = $this->pdo->prepare($sql);
@@ -91,6 +99,9 @@ class Noticia
         foreach ($parametros as $chave => $valor) {
             $stmt->bindValue($chave, $valor);
         }
+
+        // LIMIT e OFFSET precisam ser vinculados explicitamente como inteiros (PARAM_INT),
+        // senão o MySQL pode rejeitar a query (o PDO trataria como string por padrão).
         $stmt->bindValue(':limite', $porPagina, PDO::PARAM_INT);
         $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
         $stmt->execute();
@@ -125,13 +136,10 @@ class Noticia
 
         $resultado = $stmt->fetch();
 
-        return $resultado ?: null;
-
-
-        
+        return $resultado ?: null;        
     }
 
-        /**
+    /**
      * Atualiza uma notícia existente pelo ID.
      */
     public function atualizar(int $id, array $dados): bool
@@ -158,7 +166,7 @@ class Noticia
         ]);
     }
 
-        /**
+    /**
      * Remove uma notícia do banco pelo ID.
      */
     public function excluir(int $id): bool
