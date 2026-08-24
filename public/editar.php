@@ -14,8 +14,12 @@ if (!$item) {
 
 $erro = '';
 
-// Se o formulário foi enviado, processa a atualização
+// Verifica se o formulário foi enviado (POST) ou se é apenas a primeira
+// visita à página (GET, quando o navegador só carrega o formulário vazio).
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // trim() remove espaços em branco extras no início/fim.
+    // O operador ?? '' evita erro caso o campo não tenha sido enviado,
+    // usando string vazia como valor padrão.
     $titulo = trim($_POST['titulo'] ?? '');
     $subtitulo = trim($_POST['subtitulo'] ?? '');
     $conteudo = trim($_POST['conteudo'] ?? '');
@@ -36,7 +40,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'categoria' => $categoria,
             'data_publicacao' => $dataPublicacao,
         ]);
-
+        // Padrão Post/Redirect/Get: depois de salvar, redirecionamos o usuário
+        // em vez de apenas exibir uma mensagem na mesma página. Isso evita que,
+        // se o usuário der F5 (recarregar), o formulário seja reenviado e crie
+        // um registro duplicado.
         header('Location: visualizar.php?id=' . $id);
         exit;
     }
