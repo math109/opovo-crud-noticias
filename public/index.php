@@ -5,6 +5,8 @@ use App\Noticia;
 
 $noticia = new Noticia();
 
+// Lê os parâmetros da URL (?busca=x&categoria=y&pagina=2).
+// Se não vierem, usamos valores padrão (busca vazia, página 1).
 $termoBusca = trim($_GET['busca'] ?? '');
 $categoriaFiltro = trim($_GET['categoria'] ?? '');
 $paginaAtual = max(1, (int) ($_GET['pagina'] ?? 1));
